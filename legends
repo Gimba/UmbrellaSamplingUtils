@@ -1,0 +1,9 @@
+
+with g0
+  s0 legend "WT"
+  s1 legend "V2223M"
+  s2 legend "S2250A"
+  s3 legend "R2220Q"
+  s4 legend "R2220A"
+  s5 legend "R2215A"
+
