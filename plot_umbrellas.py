@@ -24,7 +24,7 @@ def main(argv):
 
     data_files = args.data_files.split(',')
 
-    markers = ["*", "o", "+", "_", "x", "d", 10, 9, "s", "P"]
+    markers = ["*", "o", "+", "_", "x", "d", 10, 9, "s", "P", "p", "D", "<", "X"]
     data = {}
     m_count =0
     for file in data_files:
