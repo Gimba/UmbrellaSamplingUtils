@@ -3,6 +3,8 @@
 import argparse
 import sys
 import matplotlib.pyplot as plt
+from matplotlib import cm
+
 import numpy as np
 from matplotlib import rc
 from pylab import rcParams
@@ -25,9 +27,9 @@ def main(argv):
     data_files = args.data_files.split(',')
 
     markers = ["*", "o", "+", "_", "x", "d", 10, 9, "s", "P", "p", "D", "<", "X"]
+    colors = cm.get_cmap('Accent', len(data_files)).colors
     data = {}
-    m_count =0
-    for file in data_files:
+    for c, file in enumerate(data_files):
         with open(file,'r') as f:
             angles = []
             pmfs = []
@@ -39,8 +41,7 @@ def main(argv):
                     pmfs.append(float(pmf))
             data[file] = [angles, pmfs]
 
-            plt.plot(data[file][0], data[file][1], marker=markers[m_count])
-        m_count +=  1
+            plt.plot(data[file][0], data[file][1], marker=markers[c], color=colors[c])
 
     plt.legend([d.split("/")[1].split("_")[0] for d in data_files])
     plt.show()
