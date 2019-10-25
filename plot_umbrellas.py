@@ -10,7 +10,8 @@ from matplotlib import rc
 from pylab import rcParams
 
 # set size of figure
-# rcParams['figure.figsize'] = 18.54, 11.46
+rcParams['figure.figsize'] = 18.54, 11.46
+
 
 # rc('text', usetex=True)
 # fontsize_markers = 16
@@ -30,12 +31,12 @@ def main(argv):
     colors = cm.get_cmap('tab20', len(data_files)).colors
     data = {}
     for c, file in enumerate(data_files):
-        with open(file,'r') as f:
+        with open(file, 'r') as f:
             angles = []
             pmfs = []
             print(file)
             for line in f.readlines():
-                if line[0] != '#' and line[0] != '@' and len(line) >=2:
+                if line[0] != '#' and line[0] != '@' and len(line) >= 2:
                     angle, pmf = line.split()
                     angles.append(float(angle))
                     pmfs.append(float(pmf))
@@ -44,7 +45,8 @@ def main(argv):
             plt.plot(data[file][0], data[file][1], marker=markers[c], markevery=5, color=colors[c])
 
     plt.legend([d.split("/")[1].split("_")[0] for d in data_files])
-    plt.show()
+    # plt.show()
+    plt.savefig('pmfs.png')
 
 
 if __name__ == '__main__':
