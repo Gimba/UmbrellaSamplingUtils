@@ -41,7 +41,7 @@ def main(argv):
                     pmfs.append(float(pmf))
             data[file] = [angles, pmfs]
 
-            plt.plot(data[file][0], data[file][1], marker=markers[c], color=colors[c])
+            plt.plot(data[file][0], data[file][1], marker=markers[c], markevery=5, color=colors[c])
 
     plt.legend([d.split("/")[1].split("_")[0] for d in data_files])
     plt.show()
