@@ -27,7 +27,7 @@ def main(argv):
 
     data_files = args.data_files.split(',')
 
-    markers = ["*", "o", "+", "_", "x", "d", 10, 9, "s", "P", "p", "D", "<", "X"]
+    markers = ["*", "o", "+", "_", "x", "d", 10, 9, "s", "P", "p", "D", "<", "X", "."]
     colors = cm.get_cmap('tab20', len(data_files)).colors
     data = {}
     for c, file in enumerate(data_files):
