@@ -41,7 +41,7 @@ def main():
                     o.write('{} <-> {} : True\n'.format(key, key_next))
                 else:
                     o.write('{} <-> {} : False\n'.format(key, key_next))
-    plt.show()
+    plt.savefig('histograms.png')
 
 
 if __name__ == '__main__':
