@@ -40,6 +40,7 @@ def main():
                 if (dat_quantile > dat_next_quantile):
                     o.write('{} <-> {} : True\n'.format(key, key_next))
                 else:
+                    print('!!! {} <-> {} : False\n'.format(key, key_next))
                     o.write('{} <-> {} : False\n'.format(key, key_next))
     plt.savefig('histograms.png')
 
