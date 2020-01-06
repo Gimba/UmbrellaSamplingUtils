@@ -22,6 +22,7 @@ def main():
             for line in f.readlines():
                 dat = line.split()[-1]
                 data[file_number].append(float(dat))
+
             # plot and annotate histograms
             y, x, _ = plt.hist(data[file_number], bins=100, histtype='step')
             y_coord = max(y)
@@ -29,8 +30,8 @@ def main():
             x_coord = x[np.where(y == max(y))[0][0]]
             plt.annotate(str(file_number), (x_coord, y_coord), ha='center')
 
-    plt.xlabel('angle')
-    plt.ylabel('data points')
+    plt.xlabel('dihedral angle')
+    plt.ylabel('frequency')
 
     #  use quantiles to check proper overlap of distributions
     with open('umbrella_stats.txt', 'w') as o:
