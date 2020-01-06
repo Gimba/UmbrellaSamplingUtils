@@ -22,6 +22,8 @@ def main():
                 data[file_number].append(float(dat))
 
             plt.hist(data[file_number], bins=100, histtype='step')
+    plt.xlabel('angle')
+    plt.ylabel('data points')
     plt.show()
 
 
