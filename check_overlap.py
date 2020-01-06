@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def main():
+    fig = plt.figure(figsize=(15, 10))
+
     data = {}
     files = []
     for file in glob.glob("*.dat"):
