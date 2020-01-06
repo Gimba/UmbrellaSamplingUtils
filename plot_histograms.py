@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import glob
-
+import matplotlib.pyplot as plt
 
 def main():
     data = {}
@@ -19,7 +19,10 @@ def main():
 
             for line in f.readlines():
                 dat = line.split()[-1]
-                data[file_number].append(dat)
+                data[file_number].append(float(dat))
+
+            plt.hist(data[file_number], bins=100, histtype='step')
+    plt.show()
 
 
 if __name__ == '__main__':
