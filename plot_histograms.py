@@ -26,19 +26,21 @@ def main():
     plt.ylabel('data points')
 
     #  use quantiles to check proper overlap of distributions
-    for key in sorted(data.keys()):
-        key_next = key + 1
-        if key_next in data.keys():
-            dat = np.asarray(data[key])
-            dat_next = np.asarray(data[key_next])
-            dat_quantile = np.quantile(dat, 0.8)
-            dat_next_quantile = np.quantile(dat_next, 0.2)
-            plt.axvline(dat_quantile, color='red')
-            plt.axvline(dat_next_quantile)
-            if (dat_quantile > dat_next_quantile):
-                print(key, key_next, 'True')
-            else:
-                print(key, 'False')
+    with open('umbrella_stats.txt', 'w') as o:
+        o.write('file number <-> filenumber : sufficient overlap\n')
+        for key in sorted(data.keys()):
+            key_next = key + 1
+            if key_next in data.keys():
+                dat = np.asarray(data[key])
+                dat_next = np.asarray(data[key_next])
+                dat_quantile = np.quantile(dat, 0.8)
+                dat_next_quantile = np.quantile(dat_next, 0.2)
+                # plt.axvline(dat_quantile, color='red')
+                # plt.axvline(dat_next_quantile)
+                if (dat_quantile > dat_next_quantile):
+                    o.write('{} <-> {} : True\n'.format(key, key_next))
+                else:
+                    o.write('{} <-> {} : False\n'.format(key, key_next))
     plt.show()
 
 
