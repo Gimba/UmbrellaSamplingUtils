@@ -466,7 +466,7 @@ def main(args):
         #     runs_per_script *= 2
 
     # print out first constraint file for inspection by user
-    with open('umbrella_config/umb_out_0.dat', 'r') as f:
+    with open(configs_directory + 'umb_out_0.dat', 'r') as f:
         print(f.readlines())
 
 
