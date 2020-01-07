@@ -323,145 +323,147 @@ def main(args):
                 with open("run.sh", "w") as o:
                     o.write("#!/bin/bash\n\n")
                     o.write(run_script)
-
+    # not properly implemented
     else:
-        # generate meta files and umbrella contstraint files umb_out_...dat
-        meta_out = ""
-        for c in range(umbrellas + 1):
-            out = "Harmonic restraints\n"
-            for i in range_n_confgs:
+        pass
 
-                out += " &rst\n"
-
-                residues = umbrella_configs[i][0]
-                out += "  iat=" + ','.join(atoms) + ",\n"
-
-                angle_low_bound = umbrella_configs[i][1][0] - 180
-                angle = umbrella_configs[i][1][0]
-                angle_high_bound = umbrella_configs[i][1][0] + 180
-                out += "  r1={}, r2={}, r3={}, r4={}\n".format(angle_low_bound, angle, angle, angle_high_bound)
-
-                force = umbrella_configs[i][2]
-                out += "  rk2={}, rk3={}\n/\n".format(force, force)
-
-                meta_out += '../umbrella_productions/prod_25C_{}.dat {} 0.12184\n'.format(c, angle)
-
-                if angles[0] > angles[1]:
-                    umbrella_configs[i][1][0] -= angle_increments[i]
-                else:
-                    umbrella_configs[i][1][0] += angle_increments[i]
-
-            umbrella_constraint_file_name = '{}umb_out_{}.dat'.format(configs_directory, c)
-            with open(umbrella_constraint_file_name, 'w') as f:
-                f.write(out)
-            umbrella_constraint_files.append(umbrella_constraint_file_name)
-
-        # write meta file
-        print(meta_out)
-        with open(configs_directory + 'meta_file', 'w') as mf:
-            mf.write(meta_out)
-
-        ## generate run scripts
-
-        if args.s and len(init_files) > 1:
-            print("too many input files for option s. Exiting.")
-            exit()
-
-        runs_per_script = umbrellas // len(init_files)
-        umbrellas = umbrellas + 1
-        idx = 0
-        for init_f in init_files:
-            top, traj = init_f.split(',')
-            traj_temp = traj
-            out = ""
-            while idx <= runs_per_script and idx <= umbrellas and idx + umbrellas * 4 < len(md_files):
-                b_name_min = basename(md_files[idx]).split('.')[0]
-                run_min = \
-                    "pmemd -O " \
-                    "-i {} " \
-                    "-o umbrella_productions/{}.out " \
-                    "-p {} " \
-                    "-c {} " \
-                    "-r umbrella_productions/{}.rst " \
-                    "-inf umbrella_productions/{}.mdinfo \n" \
-                        .format(md_files[idx], b_name_min, top, traj_temp, b_name_min, b_name_min)
-
-                b_name_rel_1 = basename(md_files[idx + umbrellas]).split('.')[0]
-                run_rel_1 = \
-                    "pmemd.cuda -O " \
-                    "-i {} " \
-                    "-o umbrella_productions/{}.out " \
-                    "-p {} " \
-                    "-c umbrella_productions/{}.rst " \
-                    "-r umbrella_productions/{}.rst " \
-                    "-inf umbrella_productions/{}.mdinfo " \
-                    "-ref umbrella_productions/{}.rst \n" \
-                        .format(md_files[idx + umbrellas], b_name_rel_1, top, b_name_min, b_name_rel_1, b_name_rel_1, \
-                                b_name_min)
-
-                b_name_rel_2 = basename(md_files[idx + umbrellas * 2]).split('.')[0]
-                run_rel_2 = \
-                    "pmemd.cuda -O " \
-                    "-i {} " \
-                    "-o umbrella_productions/{}.out " \
-                    "-p {} " \
-                    "-c umbrella_productions/{}.rst " \
-                    "-r umbrella_productions/{}.rst " \
-                    "-inf umbrella_productions/{}.mdinfo " \
-                    "-ref umbrella_productions/{}.rst \n" \
-                        .format(md_files[idx + umbrellas * 2], b_name_rel_2, top, b_name_rel_1, b_name_rel_2,
-                                b_name_rel_2,
-                                b_name_rel_1)
-
-                b_name_rel_3 = basename(md_files[idx + umbrellas * 3]).split('.')[0]
-                run_rel_3 = \
-                    "pmemd.cuda -O " \
-                    "-i {} " \
-                    "-o umbrella_productions/{}.out " \
-                    "-p {} " \
-                    "-c umbrella_productions/{}.rst " \
-                    "-r umbrella_productions/{}.rst " \
-                    "-inf umbrella_productions/{}.mdinfo " \
-                    "-ref umbrella_productions/{}.rst \n" \
-                        .format(md_files[idx + umbrellas * 3], b_name_rel_3, top, b_name_rel_2, b_name_rel_3,
-                                b_name_rel_3,
-                                b_name_rel_2)
-
-                b_name_prod = basename(md_files[idx + umbrellas * 4]).split('.')[0]
-                run_prod = \
-                    "pmemd.cuda -O " \
-                    "-i {} " \
-                    "-o umbrella_productions/{}.out " \
-                    "-p {} " \
-                    "-c umbrella_productions/{}.rst " \
-                    "-r umbrella_productions/{}.rst " \
-                    "-inf umbrella_productions/{}.mdinfo " \
-                    "-x umbrella_productions/{}.nc " \
-                    "-ref umbrella_productions/{}.rst \n" \
-                        .format(md_files[idx + umbrellas * 4], b_name_prod, top, b_name_rel_3, b_name_prod, b_name_prod,
-                                b_name_prod, \
-                                b_name_rel_3)
-
-                out += "#{}\n".format(idx)
-                idx += 1
-                out += run_min + "\n" + run_rel_1 + "\n" + run_rel_2 + "\n" + run_rel_3 + "\n" + run_prod + "\n"
-
-                if args.s:
-                    traj_temp = "umbrella_productions/" + b_name_prod + ".rst"
-
-            # write run script
-            if args.s:
-                script_file_name = 'init_WT_run_s_' + str(idx - 1) + ".sh"
-
-            else:
-                script_file_name = 'init_' + basename(init_f).split('.')[0] + "_run_" + str(idx - 1) + ".sh"
-
-            print(script_file_name)
-            with open(script_file_name, "w") as o:
-                o.write("#!/bin/bash\n\n")
-                o.write(out)
-            print(runs_per_script)
-            runs_per_script *= 2
+        # # generate meta files and umbrella contstraint files umb_out_...dat
+        # meta_out = ""
+        # for c in range(umbrellas + 1):
+        #     out = "Harmonic restraints\n"
+        #     for i in range_n_confgs:
+        #
+        #         out += " &rst\n"
+        #
+        #         residues = umbrella_configs[i][0]
+        #         out += "  iat=" + ','.join(atoms) + ",\n"
+        #
+        #         angle_low_bound = umbrella_configs[i][1][0] - 180
+        #         angle = umbrella_configs[i][1][0]
+        #         angle_high_bound = umbrella_configs[i][1][0] + 180
+        #         out += "  r1={}, r2={}, r3={}, r4={}\n".format(angle_low_bound, angle, angle, angle_high_bound)
+        #
+        #         force = umbrella_configs[i][2]
+        #         out += "  rk2={}, rk3={}\n/\n".format(force, force)
+        #
+        #         meta_out += '../umbrella_productions/prod_25C_{}.dat {} 0.12184\n'.format(c, angle)
+        #
+        #         if angles[0] > angles[1]:
+        #             umbrella_configs[i][1][0] -= angle_increments[i]
+        #         else:
+        #             umbrella_configs[i][1][0] += angle_increments[i]
+        #
+        #     umbrella_constraint_file_name = '{}umb_out_{}.dat'.format(configs_directory, c)
+        #     with open(umbrella_constraint_file_name, 'w') as f:
+        #         f.write(out)
+        #     umbrella_constraint_files.append(umbrella_constraint_file_name)
+        #
+        # # write meta file
+        # print(meta_out)
+        # with open(configs_directory + 'meta_file', 'w') as mf:
+        #     mf.write(meta_out)
+        #
+        # ## generate run scripts
+        #
+        # if args.s and len(init_files) > 1:
+        #     print("too many input files for option s. Exiting.")
+        #     exit()
+        #
+        # runs_per_script = umbrellas // len(init_files)
+        # umbrellas = umbrellas + 1
+        # idx = 0
+        # for init_f in init_files:
+        #     top, traj = init_f.split(',')
+        #     traj_temp = traj
+        #     out = ""
+        #     while idx <= runs_per_script and idx <= umbrellas and idx + umbrellas * 4 < len(md_files):
+        #         b_name_min = basename(md_files[idx]).split('.')[0]
+        #         run_min = \
+        #             "pmemd -O " \
+        #             "-i {} " \
+        #             "-o umbrella_productions/{}.out " \
+        #             "-p {} " \
+        #             "-c {} " \
+        #             "-r umbrella_productions/{}.rst " \
+        #             "-inf umbrella_productions/{}.mdinfo \n" \
+        #                 .format(md_files[idx], b_name_min, top, traj_temp, b_name_min, b_name_min)
+        #
+        #         b_name_rel_1 = basename(md_files[idx + umbrellas]).split('.')[0]
+        #         run_rel_1 = \
+        #             "pmemd.cuda -O " \
+        #             "-i {} " \
+        #             "-o umbrella_productions/{}.out " \
+        #             "-p {} " \
+        #             "-c umbrella_productions/{}.rst " \
+        #             "-r umbrella_productions/{}.rst " \
+        #             "-inf umbrella_productions/{}.mdinfo " \
+        #             "-ref umbrella_productions/{}.rst \n" \
+        #                 .format(md_files[idx + umbrellas], b_name_rel_1, top, b_name_min, b_name_rel_1, b_name_rel_1, \
+        #                         b_name_min)
+        #
+        #         b_name_rel_2 = basename(md_files[idx + umbrellas * 2]).split('.')[0]
+        #         run_rel_2 = \
+        #             "pmemd.cuda -O " \
+        #             "-i {} " \
+        #             "-o umbrella_productions/{}.out " \
+        #             "-p {} " \
+        #             "-c umbrella_productions/{}.rst " \
+        #             "-r umbrella_productions/{}.rst " \
+        #             "-inf umbrella_productions/{}.mdinfo " \
+        #             "-ref umbrella_productions/{}.rst \n" \
+        #                 .format(md_files[idx + umbrellas * 2], b_name_rel_2, top, b_name_rel_1, b_name_rel_2,
+        #                         b_name_rel_2,
+        #                         b_name_rel_1)
+        #
+        #         b_name_rel_3 = basename(md_files[idx + umbrellas * 3]).split('.')[0]
+        #         run_rel_3 = \
+        #             "pmemd.cuda -O " \
+        #             "-i {} " \
+        #             "-o umbrella_productions/{}.out " \
+        #             "-p {} " \
+        #             "-c umbrella_productions/{}.rst " \
+        #             "-r umbrella_productions/{}.rst " \
+        #             "-inf umbrella_productions/{}.mdinfo " \
+        #             "-ref umbrella_productions/{}.rst \n" \
+        #                 .format(md_files[idx + umbrellas * 3], b_name_rel_3, top, b_name_rel_2, b_name_rel_3,
+        #                         b_name_rel_3,
+        #                         b_name_rel_2)
+        #
+        #         b_name_prod = basename(md_files[idx + umbrellas * 4]).split('.')[0]
+        #         run_prod = \
+        #             "pmemd.cuda -O " \
+        #             "-i {} " \
+        #             "-o umbrella_productions/{}.out " \
+        #             "-p {} " \
+        #             "-c umbrella_productions/{}.rst " \
+        #             "-r umbrella_productions/{}.rst " \
+        #             "-inf umbrella_productions/{}.mdinfo " \
+        #             "-x umbrella_productions/{}.nc " \
+        #             "-ref umbrella_productions/{}.rst \n" \
+        #                 .format(md_files[idx + umbrellas * 4], b_name_prod, top, b_name_rel_3, b_name_prod, b_name_prod,
+        #                         b_name_prod, \
+        #                         b_name_rel_3)
+        #
+        #         out += "#{}\n".format(idx)
+        #         idx += 1
+        #         out += run_min + "\n" + run_rel_1 + "\n" + run_rel_2 + "\n" + run_rel_3 + "\n" + run_prod + "\n"
+        #
+        #         if args.s:
+        #             traj_temp = "umbrella_productions/" + b_name_prod + ".rst"
+        #
+        #     # write run script
+        #     if args.s:
+        #         script_file_name = 'init_WT_run_s_' + str(idx - 1) + ".sh"
+        #
+        #     else:
+        #         script_file_name = 'init_' + basename(init_f).split('.')[0] + "_run_" + str(idx - 1) + ".sh"
+        #
+        #     print(script_file_name)
+        #     with open(script_file_name, "w") as o:
+        #         o.write("#!/bin/bash\n\n")
+        #         o.write(out)
+        #     print(runs_per_script)
+        #     runs_per_script *= 2
     with open('umbrella_config/umb_out_0.dat', 'r') as f:
         print(f.readlines())
 
