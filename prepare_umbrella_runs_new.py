@@ -305,9 +305,6 @@ def main(args):
                     md_configs = generate_sim_configs(configs_directory, sim_configuration_files,
                                                       umbrella_constraint_file_name, c)
 
-                    md_configs = generate_sim_configs(configs_directory, sim_configuration_files,
-                                                      umbrella_constraint_file_name, c)
-
                     run_temp, next_traj = generate_run_script(md_configs, init_prmtop, next_traj)
                     run_script += "#{}\n".format(c)
                     run_script += run_temp
