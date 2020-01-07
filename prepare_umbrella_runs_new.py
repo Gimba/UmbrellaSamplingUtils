@@ -142,9 +142,11 @@ def generate_run_script(md_files, top, traj):
 
 
 def main(args):
-    parser = argparse.ArgumentParser(description='Prepare config files for umbrella sampling run.')
-    parser.add_argument('raf', help='list like: "residues_1,angle_1_fromp,angle_1_to,force_1:residues_2,angle_2_from,'
-                                    'angle_2_to,force_2:..."')
+    parser = argparse.ArgumentParser(description='Prepare config files for umbrella sampling run with a dihedral '
+                                                 'angle as reaction coordinate. By default the alpha carbons atoms of '
+                                                 'the specified residues are used to apply the constraint.')
+    parser.add_argument('raf', help='list like: "residues_1:angle_1_from,angle_1_to:force_1|residues_2:angle_2_from,'
+                                    'angle_2_to:force_2|... e.g. 28,31,39,56:-130,50:200"')
     parser.add_argument('umbrellas', help='how many umbrella do we want to span?')
     parser.add_argument('init', help='names of initial topologies and trajectories, '
                                      'e.g. "WT.prmtop,rel_3.rst:WT.prmtop,prod_1.rst"')
@@ -156,7 +158,7 @@ def main(args):
                                                                              'prod_25C.umbin')
     parser.add_argument('output_directory', help='directory where umbrella config files are written to (default:'
                                                  ' umbrella_config)', default='umbrella_config')
-    parser.add_argument('init_value', help='initial value that should be started with', nargs='?', default=False)
+    parser.add_argument('-i', 'init_value', help='initial value that should be started with', nargs='?', default=False)
     parser.add_argument('-s', action='store_true',
                         help='define weather the last frame of each simulation is used for the next one as a start. '
                              'In this case there should be only one init file.')
@@ -224,7 +226,7 @@ def main(args):
     umbrella_constraint_files = []
     n_cnfgs = len(umbrella_configs)
 
-    # create dictionary to hold meta files
+    # create dictionary to hold constraint files
     meta_files = {}
     range_n_confgs = range(n_cnfgs)
     for n in range_n_confgs:
