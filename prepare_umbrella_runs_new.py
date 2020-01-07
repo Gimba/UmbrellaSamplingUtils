@@ -148,7 +148,12 @@ def main(args):
     parser.add_argument('umbrellas', help='how many umbrella do we want to span?')
     parser.add_argument('init', help='names of initial topologies and trajectories, '
                                      'e.g. "WT.prmtop,rel_3.rst:WT.prmtop,prod_1.rst"')
-    parser.add_argument('sim_config_path', help='here can MD settings be found')
+    parser.add_argument('sim_config_path', help='directory where MD settings be found')
+    parser.add_argument('sim_config_files', help='list of file names of configuration files. (default: '
+                                                 '"min_1.umbin","rel_1.umbin","rel_2_25C.umbin","rel_3_25C.umbin",'
+                                                 '"prod_25C.umbin"', default='min_1.umbin,rel_1.umbin,'
+                                                                             'rel_2_25C.umbin,rel_3_25C.umbin,'
+                                                                             'prod_25C.umbin')
     parser.add_argument('output_directory', help='directory where umbrella config files are written to (default:'
                                                  ' umbrella_config)', default='umbrella_config')
     parser.add_argument('init_value', help='initial value that should be started with', nargs='?', default=False)
@@ -168,11 +173,11 @@ def main(args):
     # initial/template configuration files
     sim_configuration_path = args.sim_config_path
 
-    sim_configuration_files = [join(sim_configuration_path, 'min_1.umbin'),
-                               join(sim_configuration_path, 'rel_1.umbin'),
-                               join(sim_configuration_path, 'rel_2_25C.umbin'),
-                               join(sim_configuration_path, 'rel_3_25C.umbin'),
-                               join(sim_configuration_path, 'prod_25C.umbin')]
+    sim_config_files = args.sim_config_files.split(',')
+
+    sim_configuration_files = []
+    for scf in sim_config_files:
+        sim_configuration_files.append(join(sim_configuration_path, scf))
 
     # there is possibly more than one angle that gets transformed
     residues_angles_force = args.raf.split('|')
