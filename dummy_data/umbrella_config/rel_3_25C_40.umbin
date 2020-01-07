@@ -1,0 +1,29 @@
+Relaxation 3
+&cntrl
+ imin=0, 				! no minimization, molecular dynamics run
+ ntx=5,  				! read coordinates velocities from file specified in pmemd command (e.g. -c productions/rel_2.rst)
+ irest=1, 				! read coordinates and velocities from a previously saved restart file
+ ntb=2,                 ! constant volume
+ ntp=1, 				! constant pressure
+ pres0=1.0, 			! isotropic pressure scaling at 1 atm
+ barostat=2, 			! Use MonteCarlo barostat
+ ntc=1, 				! Shake off
+ ntf=1,					! force evaluation, bond interactions involving hydrogen are omitted
+ ntt=3,					! Langevin dynamics with collision frequency given by gamma_ln
+ gamma_ln=1.0,			! Langevin Thermostat, 1.0ps-1
+ temp0=298.15,			! Initial Temperature of 310K
+ nstlim=500000, 		! number of MD steps to perform
+ dt=0.001,				! 0.001ps = 1fs | 1fs x 500,000 steps = 500,000fs = 0.5ns
+ iwrap=1,				! Wrap coordinates to central box
+ ioutfm=1,				! Write binary mdcrd
+ ntpr=5000, ntwx=5000,	! Write to mdout and mdcrd every 5,000 steps
+ ntwr=50000, 			! Write restart file every 50,000 steps
+ ntr=0, 				! No restraints
+ ig=-1,					! generate new random number to get new starting velocities, also used by thermostat and barostat
+ cut=10.0, 				! 10 Angstrom VDW cutoff, truncate nonbonded pairs
+ nmropt=1, 				! Used to ramp temperature slowly used with NMR restraints specified by &wt
+/
+&wt
+ type='END'
+&end
+DISANG=./umbrella_config/umb_out_40.dat

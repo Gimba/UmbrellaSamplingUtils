@@ -1,0 +1,37 @@
+Relaxation 2
+&cntrl
+ imin=0, 				! no minimization, molecular dynamics run
+ ntx=5, 				! read coordinates velocities from file specified in pmemd command (e.g. -c productions/rel_1.rst)
+ irest=1, 				! read coordinates and velocities from a previously saved restart file
+ ntb=2,                 ! constant volume
+ ntp=1,  				! constant pressure
+ pres0=1.0, 			! isotropic pressure scaling at 1 atm
+ barostat=2, 			! Use MonteCarlo barostat
+ ntc=1, 				! Shake off
+ ntf=1, 				! force evaluation, bond interactions involving hydrogen are omitted	
+ ntt=3, 				! Langevin dynamics with collision frequency given by gamma_ln
+ gamma_ln=1.0, 			! Langevin Thermostat, 1.0ps-1
+ temp0=298.15, 			! Initial Temperature of 310K (overwritten by &wt section)
+ nstlim=1000000,  		! number of MD steps to perform
+ dt=0.001, 				! 0.001ps = 1fs | 1fs x 100,000 steps = 100,000fs = 0.1ns
+ iwrap=1, 				! Wrap coordinates to central box
+ ioutfm=1,  			! Write binary mdcrd
+ ntpr=5000, ntwx=5000, 	! Write to mdout and mdcrd every 5,000 steps
+ ntwr=50000, 			! Write restart file every 50,000 steps
+ ntr=1, restraint_wt=1.0, restraintmask='@CA,C,N', 	! Restrain backbone atoms with 1.0 KCal/Mol/A
+ ig=-1,					! Use random number as starting velocity
+ nmropt=1, 				! Used to ramp temperature slowly used with NMR restraints specified by &wt
+ cut=10.0, 				! 10 Angstrom VDW cutoff, truncate nonbonded pairs
+/
+&wt type='TEMP0', 		! specify that temperature should be changed
+istep1=0, 				! step to start at
+istep2=250000, 			! step to finish
+value1=50.0, 			! initial value (50K)
+value2=298.15 / 		! final value (310K)
+&wt type='TEMP0', 		! specify that temperature should be changed
+istep1=125001, 			! step to start at
+istep2=1000000, 		! step to finish
+value1=298.15, 			! initial value (0K)
+value2=298.15 / 		! final value (50K)
+&wt type='END' / 		! end section &wt
+DISANG=./umbrella_config/umb_out_-16.dat

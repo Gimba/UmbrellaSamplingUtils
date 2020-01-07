@@ -1,0 +1,16 @@
+Minimisation
+&cntrl
+ imin=1,				! specify as sander energy minimisation run, single point energy calculation
+ ntx = 1,				! Read from minimized or model-built coordinates (no velocities read)
+ maxcyc=80,  			! maximum number of cycles of minimization
+ ncyc = 40, 			! amount of steps to switch from steepest descent to conjugate gradient
+ ntc=1, 				! no shake
+ ntf=1,					! force evaluation, calculate forces for contrained bonds 
+ ntb=1, 				! Constant volume
+ ntp=0,					! Constant pressure
+ ntpr=50,				! Print to mdout every 50 steps
+ cut=10.0,				! 10 Angstrom VDW cutoff, truncate nonbonded pairs
+ nmropt=1
+/
+&wt type='END' /
+DISANG=./umbrella_config/umb_out_-20.dat

@@ -1,0 +1,29 @@
+Relaxation 1
+&cntrl
+ imin=0, 				! no minimization, molecular dynamics run
+ ntx=1,					! read from minimization, no velocities read
+ ntb=1,					! constant volume
+ ntp=0, 				! No barostat, no costant pressure
+ ntc=1, 				! Shake off
+ ntf=1,					! force evaluation, bond interactions involving hydrogen are omitted
+ ntt=3, 				! Langevin dynamics with collision frequency given by gamma_ln
+ gamma_ln=1.0,			! Langevin Thermostat, 1.0ps-1
+ tempi=0.0, 			! Initial Temperature of 0K
+ nstlim=50000, 			! number of MD steps to perform
+ dt=0.001,				! 0.001ps = 1fs | 1fs x 50,000 steps = 50,000fs = 0.05ns
+ iwrap=1,				! Wrap coordinates to central box
+ ioutfm=1,				! Write binary mdcrd
+ ntpr=5000, ntwx=5000,	! Write to mdout and mdcrd every 5,000 steps
+ ntwr=50000,			! Write restart file every 50,000 steps
+ ntr=1, restraint_wt=4.0, restraintmask='@CA,C,N',	! Restrain backbone atoms with 4.0 KCal/Mol/A
+ ig=-1,					! generate new random number to get new starting velocities, also used by thermostat and barostat
+ nmropt=1,				! Used to ramp temperature slowly used with NMR restraints specified by &wt
+ cut=10.0,				! 10 Angstrom VDW cutoff, truncate nonbonded pairs
+/
+&wt type='TEMP0', 		! specify that temperature should be changed
+istep1=0, 				! step to start at
+istep2=50000, 			! step to finish
+value1=0.0, 			! initial value (0K)
+value2=50.0  / 			! final value (50K)
+&wt type='END' / 		! end section &wt
+DISANG=./umbrella_config/umb_out_-29.dat
