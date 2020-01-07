@@ -151,14 +151,17 @@ def main(args):
     parser.add_argument('init', help='names of initial topologies and trajectories, '
                                      'e.g. "WT.prmtop,rel_3.rst:WT.prmtop,prod_1.rst"')
     parser.add_argument('sim_config_path', help='directory where MD settings be found')
-    parser.add_argument('sim_config_files', help='list of file names of configuration files. (default: '
-                                                 '"min_1.umbin","rel_1.umbin","rel_2_25C.umbin","rel_3_25C.umbin",'
-                                                 '"prod_25C.umbin"', default='min_1.umbin,rel_1.umbin,'
-                                                                             'rel_2_25C.umbin,rel_3_25C.umbin,'
-                                                                             'prod_25C.umbin')
-    parser.add_argument('output_directory', help='directory where umbrella config files are written to (default:'
-                                                 ' umbrella_config)', default='umbrella_config')
-    parser.add_argument('-i', 'init_value', help='initial value that should be started with', nargs='?', default=False)
+    parser.add_argument('-si', '--sim_config_files', help='list of file names of configuration files. ('
+                                                          'default: '
+                                                          '"min_1.umbin","rel_1.umbin","rel_2_25C.umbin","rel_3_25C.umbin",'
+                                                          '"prod_25C.umbin"', default='min_1.umbin,rel_1.umbin,'
+                                                                                      'rel_2_25C.umbin,rel_3_25C.umbin,'
+                                                                                      'prod_25C.umbin')
+    parser.add_argument('-o', '--output_directory', help='directory where umbrella config files are written to ('
+                                                         'default:'
+                                                         ' umbrella_config)', default='umbrella_config/')
+    parser.add_argument('-i', '--init_value', help='initial value that should be started with', nargs='?',
+                        default=False)
     parser.add_argument('-s', action='store_true',
                         help='define weather the last frame of each simulation is used for the next one as a start. '
                              'In this case there should be only one init file.')
