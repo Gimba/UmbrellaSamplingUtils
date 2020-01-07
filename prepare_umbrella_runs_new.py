@@ -464,6 +464,8 @@ def main(args):
         #         o.write(out)
         #     print(runs_per_script)
         #     runs_per_script *= 2
+
+    # print out first constraint file for inspection by user
     with open('umbrella_config/umb_out_0.dat', 'r') as f:
         print(f.readlines())
 
