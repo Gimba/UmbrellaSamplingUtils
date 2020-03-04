@@ -118,7 +118,7 @@ def generate_run_script(md_files, top, traj):
             .format(md_files['rel_3_25C'], b_name_rel_3, top, b_name_rel_2, b_name_rel_3, b_name_rel_3,
                     b_name_rel_2)
 
-    b_name_prod = basename(md_files['prod_25C']).split('.')[0]
+    b_name_prod = basename(md_files['prod_25C_4ns']).split('.')[0]
     run_prod = \
         "pmemd.cuda -O " \
         "-i {} " \
@@ -129,7 +129,7 @@ def generate_run_script(md_files, top, traj):
         "-inf umbrella_productions/{}.mdinfo " \
         "-x umbrella_productions/{}.nc " \
         "-ref umbrella_productions/{}.rst \n" \
-            .format(md_files['prod_25C'], b_name_prod, top, b_name_rel_3, b_name_prod, b_name_prod,
+            .format(md_files['prod_25C_4ns'], b_name_prod, top, b_name_rel_3, b_name_prod, b_name_prod,
                     b_name_prod, \
                     b_name_rel_3)
 
