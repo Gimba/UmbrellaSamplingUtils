@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+
 import sys
 import argparse
 import pandas as pd
 import numpy as np
+
 
 def main(args):
     parser = argparse.ArgumentParser(description='calculate delta G value between two ranges of an umbrella sampling.')
