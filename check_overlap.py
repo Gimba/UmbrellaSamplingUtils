@@ -48,6 +48,9 @@ def main():
 
     plt.xlabel('dihedral angle')
     plt.ylabel('frequency')
+    xticks = np.arange(-130, 50, 15)
+    plt.xticks(xticks)
+    plt.xticklabels([str(k) + "°" for k in xticks])
 
     #  use quantiles to check proper overlap of distributions
     with open('umbrella_stats.txt', 'w') as o:
